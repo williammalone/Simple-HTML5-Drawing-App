@@ -1,4 +1,3 @@
-
 // Copyright 2010 William Malone (www.williammalone.com)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -251,11 +250,11 @@ var drawingApp = (function () {
 				if (clickDrag[i] && i) {
 					context.moveTo(clickX[i - 1], clickY[i - 1]);
 				} else {
-					context.moveTo(clickX[i], clickY[i]);
+					// The x position is moved over one pixel so a circle even if not dragging
+					context.moveTo(clickX[i] - 1, clickY[i]);
 				}
 				context.lineTo(clickX[i], clickY[i]);
-				context.closePath();
-
+				
 				// Set the drawing color
 				if (clickTool[i] === "eraser") {
 					//context.globalCompositeOperation = "destination-out"; // To erase instead of draw over with white
@@ -264,10 +263,12 @@ var drawingApp = (function () {
 					//context.globalCompositeOperation = "source-over";	// To erase instead of draw over with white
 					context.strokeStyle = clickColor[i];
 				}
+				context.lineCap = "round";
 				context.lineJoin = "round";
 				context.lineWidth = radius;
 				context.stroke();
 			}
+			context.closePath();
 			//context.globalCompositeOperation = "source-over";// To erase instead of draw over with white
 			context.restore();
 
