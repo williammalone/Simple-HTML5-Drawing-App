@@ -24,6 +24,10 @@
 	border:1px solid #474747;
 }
 
+#error_message {
+	 color : "red";
+}
+
 
 
 

@@ -71,6 +71,18 @@ var drawingApp = (function () {
 
 			context.clearRect(0, 0, canvasWidth, canvasHeight);
 		},
+		// Clears the drawing area
+		clearDrawing = function(){
+			
+			context.clearRect(0,0,drawingAreaWidth,drawingAreaHeight);
+			clickX.length = 0;
+			clickY.length = 0;
+			clickColor.length = 0;
+			clickTool.length = 0;
+			clickSize.length = 0;
+			clickDrag.length = 0;
+			redraw();
+		},
 
 		// Redraws the canvas.
 		redraw = function () {
@@ -390,12 +402,18 @@ var drawingApp = (function () {
 				createUserEvents();
 			}
 		},
-		
-		// loads an image to color
-		loadBackgroundImage = function(image){
+		hide_notification_message = function(){
+			// waits for 2 seconds, and then hides the messages
+			setTimeout(function(){
+				$("#notification_message").fadeOut();
+			},2000);
+		},
+		// Loads an image to color.
+		// @param image_name
+		loadBackgroundImage = function(image_name){
 			
 			outlineImage.onload = resourceLoaded;
-			outlineImage.src = "images/background/"+image;
+			outlineImage.src = "images/background/"+image_name;
 			
 		},
 		// returns an image to color
@@ -403,6 +421,93 @@ var drawingApp = (function () {
 			// this function will emit a message get the current randomly chose image for all connected users 
 			return "watermelon-duck-outline.png";
 		},
+		
+		// Saves the drawing locally as an image 
+		// @param image_name
+		// @param image_data
+		saveDrawingToLocal = function(image_name,image_data){
+		    
+			var canSave = true;
+			var $notification_message = $("#notification_message");
+			
+			restoreDrawingsFromLocal().forEach(function(drawing){
+				// check to see if there is already a drawing by the user-entered name
+				if(drawing.image_name==image_name){
+		    	      canSave = false;
+				}
+				
+			});
+			
+			if(canSave){
+				// check if there is any drawings already in storage, if there is increment the number and store or store the first one 
+					if(localStorage["drawing_number"]!=null){
+						var drawing_no = parseInt(localStorage["drawing_number"]);
+						localStorage["drawing_number"] = ++drawing_no;
+						localStorage["drawing_"+localStorage["drawing_number"]] = JSON.stringify({"image_name" : image_name,"image_data" : image_data});
+						$notification_message.html("Drawing saved.").css("color","teal").fadeIn();
+			    	    hide_notification_message();
+						clearDrawing();
+					}else{
+						localStorage["drawing_number"] = 1;
+						localStorage["drawing_"+localStorage["drawing_number"]] = JSON.stringify({"image_name" : image_name,"image_data" : image_data});
+						$notification_message.html("Drawing saved.").css("color","teal").fadeIn();
+			    	    hide_notification_message();
+			    	    clearDrawing();
+					}
+			}else{
+				
+				$notification_message.html("The name already exists. Please choose a unique name.").css("color","red").fadeIn();
+	    	    hide_notification_message();
+			}
+			
+		 },
+		 // returns the user's saved drawings
+		 restoreDrawingsFromLocal = function(){
+			 
+			   var drawings = Array();
+			 
+			   if(localStorage["drawing_number"]!=null){
+				   	var number_of_drawings = parseInt(localStorage["drawing_number"]);
+				   		for(var i=1;i<=number_of_drawings;i++){
+				   				drawings.push(JSON.parse(localStorage["drawing_"+i])); 
+				   			}
+			   }
+			 
+			 return drawings;
+		 },
+		 // deletes a drawing from storage
+		 // @param image_name
+		 deleteStoredDrawing = function(image_name){
+			 			
+			 var index = 0;
+			 restoreDrawingsFromLocal().forEach(function(drawing){
+				 if(drawing.image_name!=image_name){
+					 index++;
+					 localStorage["drawing_"+index] = JSON.stringify(drawing);
+					
+				 }
+				 
+			 });
+			 localStorage["drawing_number"] = index;
+			 populateSavedDrawings();
+			 
+		 },
+		 // populates the saved drawings from storage to the collection page
+		 populateSavedDrawings = function(){
+			 
+			 var $drawingsDiv = $("#drawingsDiv");
+				$drawingsDiv.html("");
+				var drawings = "";
+				restoreDrawingsFromLocal().forEach(function(drawing){
+					$drawingsDiv.append("<a href='#' id='"+drawing.image_name+"' data-role='button'><img src='"+drawing.image_data+"'  /><br />Name: "+drawing.image_name+"</a><br />");
+					// deletes the clicked or tapped image
+					$("#"+drawing.image_name).on("vclick",function(e){
+						deleteStoredDrawing(drawing.image_name);
+						e.preventDefault();
+					});
+				 });
+			 
+		 },
 
 		// Creates a canvas element, loads images, adds events, and draws the canvas for the first time.
 		init = function () {
@@ -444,9 +549,16 @@ var drawingApp = (function () {
 
 			
 			loadBackgroundImage(getBackgroundImage());
+			
+			
+			
 		};
 
 	return {
-		init: init
+		init: init,
+		saveDrawingToLocal : saveDrawingToLocal,
+		restoreDrawingsFromLocal : restoreDrawingsFromLocal,
+		hide_notification_message : hide_notification_message,
+		populateSavedDrawings : populateSavedDrawings
 	};
 }());

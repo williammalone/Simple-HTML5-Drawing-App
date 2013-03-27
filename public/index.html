@@ -16,8 +16,10 @@
     		<ul data-role="listview" data-inset="true" data-theme="b">
         		<li><h3>Home</h3></li>
         	</ul>
+        	
     		<div id="canvasDiv"></div>
     					<label for="drawing_name">Save Drawing</label>
+    					<div id="notification_message" style="color:red"></div>
     					<input type="text" data-inset="true" id="drawing_name" placeholder="Drawing Name" /><br />
     					<a href="#" data-role="button" data-inline="true" id="save_drawing">Save</a>
     				
@@ -48,6 +50,7 @@
     		<ul data-role="listview" data-inset="true" data-theme="b">
         		<li><h3>Collection</h3></li>
         	</ul>
+        	<div id="drawingsDiv"></div>
     		
     	</div>
     <div data-role="footer" data-position="fixed">
@@ -193,6 +196,7 @@
   
     <!--[if IE]><script type="text/javascript" src="js/excanvas.js"></script><![endif]-->
     <script type="text/javascript" src="js/drawingApp.js"></script>
+    <script src="js/logic.js"></script>
     <!-- <script src="/socket.io/lib/socket.io.js"></script> -->
     <script type="text/javascript">
     	 drawingApp.init();
