@@ -2,10 +2,7 @@
 
 	$("#saved").on({
 		pageshow : function(){
-		
-		
 			drawingApp.populateAlbumFolders();
-		
 	  }	
  });
 	
@@ -90,10 +87,10 @@ $(document).ready(function(){
 				$("#album_name_error").html("The album name already exists.").css("color","red");
 			}else{
 				$("#create_album").popup("close");
+				$("#album_name").val("");
 				setTimeout(function(){
 					drawingApp.populateAlbums();
 				},500);
-				
 			}
 			
 		}else if($.trim($("#album_name").val()).length > 15){
@@ -104,8 +101,7 @@ $(document).ready(function(){
 		}
 		
 	});
-	
-	
+
 });
 
 

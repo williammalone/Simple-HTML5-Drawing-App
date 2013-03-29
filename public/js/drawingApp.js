@@ -75,7 +75,7 @@ var drawingApp = (function () {
 		colorCanvasCrayonAreaHeight = 170,
 		colorCanvasContext,
 		colorCrayonsX = [220,220,220,220,220,220,220,220,220,220,220,220],
-		colorCrayonsY = [10,30,50,70,90,110,130,150,170,190,210,230,250],
+		colorCrayonsY = [10,50,90,130,170,210,250,290,330,370,410,450,490],
 		colorCrayonsColor = new Array("gold","orange","red","lime","pink","navy","grey","black","blue","brown","teal","maroon","silver"),
 		colorCrayons = new Array(),
 		colorCanvasDividerOneX = 200,
@@ -493,20 +493,25 @@ var drawingApp = (function () {
 				// Check which crayon was clicked, set it "selected" property to true, update the current color, and then clear the crayon area 
 				for(var i=0;i<colorCrayons.length;i++){
 					
-					if(colorCrayons[i].selected)
-						alreadySelected = i;
-					
-					if((mouseY < colorCrayons[i].y + (50/100)*mediumImageHeight && mouseY > colorCrayons[i].y - (50/100)*mediumImageHeight) && (mouseX < colorCrayons[i].y + (50/100)*mediumImageWidth && mouseX > colorCrayons[i].y - (50/100)*mediumImageWidth)){
-						isValidClick = true;
-						 if(alreadySelected){
-							 colorCrayons[alreadySelected].selected = false;
-						 }
+					if((mouseY <= colorCrayons[i].y + 37 && mouseY >= colorCrayons[i].y + 7) && (mouseX < colorCrayons[i].x + 63 && mouseX > colorCrayons[i].x + 8)){
+							isValidClick = true;
+						
 						colorCrayons[i].selected = true;
 						curColor = colorCrayons[i].color;
-						console.log("crayon clicked");
+						deselectCrayons(i);
+						
 					}
 				}
 				
+				
+			},
+			deselectCrayons = function(selected){
+				for(var i=0;i<colorCrayons.length;i++){
+					if(i!=selected){
+						colorCrayons[i].selected = false;
+					}
+				
+				}
 				
 			},
 			clicked = function(e){
@@ -518,10 +523,10 @@ var drawingApp = (function () {
 				// Determine which button was clicked
 				if(((mouseX < 84 && mouseX > 47) && (mouseY > 145 && mouseY < 184 ))  ){
 					 isValidClick = true;
-					 console.log(typeof e.which);
 					// Move the brushes up by 10 px
 					for(var i=0;i<colorCrayons.length;i++){
 						colorCrayons[i].y = parseInt(colorCrayons[i].y) - 10;
+						
 					}
 				}else if((mouseX < 436 && mouseX > 397) && (mouseY > 144 && mouseY < 184)){
 					 isValidClick = true;
@@ -532,7 +537,6 @@ var drawingApp = (function () {
 				}
 				
 				// No button was clicked. Maybe the user clicked a crayon?
-				if(!isValidClick)
 			       crayonClicked(mouseX,mouseY);
 			     
 			     if(isValidClick){
@@ -587,7 +591,7 @@ var drawingApp = (function () {
 			
 			restoreDrawingsFromLocal().forEach(function(drawing){
 				// Check to see if there is already a drawing by the user-entered name
-				if(drawing.image_name==image_name){
+				if(drawing.image_name==image_name && drawing.album_id == album_id){
 		    	      canSave = false;
 				}
 				
@@ -620,7 +624,6 @@ var drawingApp = (function () {
 		 restoreDrawingsFromLocal = function(){
 			 
 			   var drawings = Array();
-			 
 			   if(localStorage["drawing_number"]!=null){
 				   	var number_of_drawings = parseInt(localStorage["drawing_number"]);
 				   		for(var i=1;i<=number_of_drawings;i++){
@@ -632,20 +635,32 @@ var drawingApp = (function () {
 		 },
 		 // Deletes a drawing from storage
 		 // @param image_name
-		 deleteStoredDrawing = function(image_name){
+		 deleteStoredDrawing = function(image_name,album_id){
 			 			
 			 var index = 0;
 			 restoreDrawingsFromLocal().forEach(function(drawing){
-				 if(drawing.image_name!=image_name){
+				 if(drawing.image_name != image_name && drawing.album_id != album_id){
 					 index++;
 					 localStorage["drawing_"+index] = JSON.stringify(drawing);
-					
 				 }
-				 
 			 });
 			 localStorage["drawing_number"] = index;
 			 populateSavedDrawings();
+		 },
+		 // Deletes album files
+		// @param album_id
+		 deleteAlbumFiles = function(album_id){
+			 console.log("deleting files...");
 			 
+		 },
+		 // Deletes an album
+		 // @param album_id
+		 deleteAlbum = function(album_id){
+			 var albums = JSON.parse(localStorage['albums']);
+			 albums = $.grep(albums,function(album,i){
+				      return (album.album_id != album_id);
+			 		});
+			 localStorage['albums'] = JSON.stringify(albums);
 		 },
 		 // Populates the saved drawings from storage to the collection page
 		 // @param album_id
@@ -659,7 +674,7 @@ var drawingApp = (function () {
 						$drawingsDiv.append("<a href='#' id='"+drawing.image_name+"' data-role='button'><img src='"+drawing.image_data+"'  /><br />Name: "+drawing.image_name+"</a><br />");
 						// deletes the clicked or tapped image
 						$("#"+drawing.image_name).on("vclick",function(e){
-							deleteStoredDrawing(drawing.image_name);
+								deleteStoredDrawing(drawing.image_name,drawing.album_id);
 							e.preventDefault();
 						});
 					}
@@ -673,15 +688,27 @@ var drawingApp = (function () {
 			   	 folderImage.onload = function(){
 			   		$("#foldersDiv").html("");
 			   		JSON.parse(localStorage['albums']).forEach(function(album){
-			   			$("#foldersDiv").append(" <a href='#' data-role='button'  id='"+album.album_id+"' class='folder'><img src='"+folderImage.src+"' alt='folder' class='folder' /></a> <div> "+album.album_name+"</div><br />");
+			   			$("#foldersDiv").append("");
+			   			$("#foldersDiv").append(" <div><a href='#' data-role='button' id='delete_"+album.album_id+"' title='delete'><img src='images/delete.png' alt='delete' /></a> <a href='#' data-role='button'  id='"+album.album_id+"' class='folder'><img src='"+folderImage.src+"' alt='folder' class='folder' /></a> <div> "+album.album_name+"</div><a href='#' data-role='button' id='enter_comp_"+album.album_id+"' title='enter collection tournament'><img src='images/enter_competition.png' alt='enter collection tournament' /></a></div>");
 			   			  // locally store the clicked folder's album id and forward the user to the savedImages page 
 			   				$("#"+album.album_id).on("vclick",function(e){
 			   				  sessionStorage['clickedFolder'] = album.album_id;
 			   				  $.mobile.changePage("#savedImages");
 			   				  e.preventDefault();
 			   			  });
+			   				
+			   			 $("#delete_"+album.album_id).on("vclick",function(){
+			   				 // delete an album if its not the default one
+			   				 if(album.album_id != "album_1"){
+			   					 deleteAlbum(album.album_id);
+			   					 deleteAlbumFiles(album.album_id);
+			   					 populateAlbumFolders();
+			   					 populateAlbums();
+			   				 }
+			   			 });	
 			   		});
-			   	 } 
+			   		
+			   } 
 		 },
 		 populateAlbums = function(){
 			 $("#albums_selection").html(cleanAlbumsDropDown);
@@ -811,15 +838,12 @@ var drawingApp = (function () {
 			next.onload = resourceLoaded;
 			next.src = "images/next.gif";
 
-			
 			loadBackgroundImage(getBackgroundImage());
-			
-			
 			
 		};
 
 	return {
-		init: init,
+		init : init,
 		saveDrawingToLocal : saveDrawingToLocal,
 		restoreDrawingsFromLocal : restoreDrawingsFromLocal,
 		hide_notification_message : hide_notification_message,
