@@ -21,6 +21,8 @@ var drawingApp = (function () {
 
 	var canvas,
 		context,
+		colorCanvas,
+		colorContext,
 		canvasWidth = 490,
 		canvasHeight = 220,
 		colorPurple = "#cb3594",
@@ -35,6 +37,8 @@ var drawingApp = (function () {
 		markerBackgroundImage = new Image(),
 		eraserBackgroundImage = new Image(),
 		crayonTextureImage = new Image(),
+		previous = new Image(),
+		next = new Image(),
 		clickX = [],
 		clickY = [],
 		clickColor = [],
@@ -57,7 +61,7 @@ var drawingApp = (function () {
 		toolHotspotHeight = 38,
 		sizeHotspotStartY = 157,
 		sizeHotspotHeight = 36,
-		totalLoadResources = 8,
+		totalLoadResources = 10,
 		curLoadResNum = 0,
 		sizeHotspotWidthObject = {
 			huge: 39,
@@ -65,6 +69,20 @@ var drawingApp = (function () {
 			normal: 18,
 			small: 16
 		},
+		colorCanvasWidth = 490,
+		colorCanvasHeight = 200,
+		colorCanvasCrayonAreaWidth = 200,
+		colorCanvasCrayonAreaHeight = 170,
+		colorCanvasContext,
+		colorCrayonsX = [220,220,220,220,220,220,220,220,220,220,220,220],
+		colorCrayonsY = [10,30,50,70,90,110,130,150,170,190,210,230,250],
+		colorCrayonsColor = new Array("gold","orange","red","lime","pink","navy","grey","black","blue","brown","teal","maroon","silver"),
+		colorCrayons = new Array(),
+		colorCanvasDividerOneX = 200,
+		colorCanvasDividerTwoX = 330,
+		cleanAlbumsDropDown,
+				
+		
 
 		// Clears the canvas.
 		clearCanvas = function () {
@@ -392,18 +410,155 @@ var drawingApp = (function () {
 			canvas.addEventListener("touchend", release, false);
 			canvas.addEventListener("touchcancel", cancel, false);
 		},
+		// Initialize the color crayons' values
+		colorCrayonsInit = function(){
+						
+			for(var i=0;i<colorCrayonsX.length;i++){
+				
+				colorCrayons.push({
+					"x" : colorCrayonsX[i],
+					"y" : colorCrayonsY[i],
+				"color" : colorCrayonsColor[i],
+			 "selected" : false
+					});
+				
+			}
+			
+		},
+		clearColorCanvas = function(){
+			
+			colorCanvasContext.clearRect(0,0,colorCanvas.width,colorCanvas.height);
+			
+		},
+		clearCrayonArea = function(){
+			colorCanvasContext.clearRect((50/100*colorCanvasDividerOneX)+colorCanvasDividerOneX,100,(50/100*colorCanvasDividerOneX)+colorCanvasDividerOneX,200);
+		},
+		redrawColorCanvas = function(){
+			
+			
+			colorCanvasContext.drawImage(crayonTextureImage,0,0,colorCanvasWidth,colorCanvasHeight);
+			colorCanvasContext.drawImage(previous,50,150,previous.width,previous.height);
+			colorCanvasContext.drawImage(next,400,150,next.width,next.height);
+			
+			colorCanvasContext.beginPath();
+			colorCanvasContext.strokeStyle = "rgba(0,0,0,.4)";
+			colorCanvasContext.lineWidth = 4;
+			colorCanvasContext.moveTo(colorCanvasDividerOneX,0);
+			colorCanvasContext.lineTo(colorCanvasDividerOneX,200);
+			colorCanvasContext.moveTo(colorCanvasDividerTwoX,0);
+			colorCanvasContext.lineTo(colorCanvasDividerTwoX,200);
+			colorCanvasContext.closePath();
+			colorCanvasContext.stroke();
+			
+			
+			// Redraw brushes using the newly calculated coordinates
+			drawColorCrayons();
+		},
+		drawColorCrayons = function(){
+			
+			var drawColorCrayon = function (x, y, color, selected) {
 
-		// Calls the redraw function after all neccessary resources are loaded.
+				colorCanvasContext.beginPath();
+				colorCanvasContext.moveTo(x + 41, y + 11);
+				colorCanvasContext.lineTo(x + 41, y + 35);
+				colorCanvasContext.lineTo(x + 29, y + 35);
+				colorCanvasContext.lineTo(x + 29, y + 33);
+				colorCanvasContext.lineTo(x + 11, y + 27);
+				colorCanvasContext.lineTo(x + 11, y + 19);
+				colorCanvasContext.lineTo(x + 29, y + 13);
+				colorCanvasContext.lineTo(x + 29, y + 11);
+				colorCanvasContext.lineTo(x + 41, y + 11);
+				colorCanvasContext.closePath();
+				colorCanvasContext.fillStyle = color;
+				colorCanvasContext.fill();
+
+				if (selected) {
+					colorCanvasContext.drawImage(crayonImage, 0, 0, 79, mediumImageHeight, x, y, 79, mediumImageHeight);
+					
+				} else {
+					colorCanvasContext.drawImage(crayonImage, 0, 0, 59, mediumImageHeight, x, y, 59, mediumImageHeight);
+				}
+			};
+			
+			
+			colorCrayons.forEach(function(colorCrayon){
+				drawColorCrayon(colorCrayon.x,colorCrayon.y,colorCrayon.color,colorCrayon.selected);
+			});
+		},
+		createColorCanvasUserEvents = function(){
+			var isValidClick = false,
+				alreadySelected;
+			
+			var crayonClicked = function(mouseX,mouseY){
+				// Check which crayon was clicked, set it "selected" property to true, update the current color, and then clear the crayon area 
+				for(var i=0;i<colorCrayons.length;i++){
+					
+					if(colorCrayons[i].selected)
+						alreadySelected = i;
+					
+					if((mouseY < colorCrayons[i].y + (50/100)*mediumImageHeight && mouseY > colorCrayons[i].y - (50/100)*mediumImageHeight) && (mouseX < colorCrayons[i].y + (50/100)*mediumImageWidth && mouseX > colorCrayons[i].y - (50/100)*mediumImageWidth)){
+						isValidClick = true;
+						 if(alreadySelected){
+							 colorCrayons[alreadySelected].selected = false;
+						 }
+						colorCrayons[i].selected = true;
+						curColor = colorCrayons[i].color;
+						console.log("crayon clicked");
+					}
+				}
+				
+				
+			},
+			clicked = function(e){
+				
+				var mouseX = e.pageX - this.offsetLeft;
+				var mouseY = e.pageY - this.offsetTop;
+					
+				
+				// Determine which button was clicked
+				if(((mouseX < 84 && mouseX > 47) && (mouseY > 145 && mouseY < 184 ))  ){
+					 isValidClick = true;
+					 console.log(typeof e.which);
+					// Move the brushes up by 10 px
+					for(var i=0;i<colorCrayons.length;i++){
+						colorCrayons[i].y = parseInt(colorCrayons[i].y) - 10;
+					}
+				}else if((mouseX < 436 && mouseX > 397) && (mouseY > 144 && mouseY < 184)){
+					 isValidClick = true;
+					// Move the brushes down by 10 px
+					for(var i=0;i<colorCrayons.length;i++){
+						colorCrayons[i].y = parseInt(colorCrayons[i].y) + 10;
+					}
+				}
+				
+				// No button was clicked. Maybe the user clicked a crayon?
+				if(!isValidClick)
+			       crayonClicked(mouseX,mouseY);
+			     
+			     if(isValidClick){
+			    	  clearColorCanvas();
+					  redrawColorCanvas();
+			     }
+			     
+			     e.preventDefault();
+				
+			};
+			colorCanvas.addEventListener("mousedown",clicked,true);
+			colorCanvas.addEventListener("touchstart",clicked,true);
+		},
+		// Calls the redraw function after all necessary resources are loaded.
 		resourceLoaded = function () {
 
 			curLoadResNum += 1;
 			if (curLoadResNum === totalLoadResources) {
 				redraw();
 				createUserEvents();
+				redrawColorCanvas();
+				createColorCanvasUserEvents();
 			}
 		},
 		hide_notification_message = function(){
-			// waits for 2 seconds, and then hides the messages
+			// Waits for approximately 2 seconds, and then hides the messages
 			setTimeout(function(){
 				$("#notification_message").fadeOut();
 			},2000);
@@ -416,22 +571,22 @@ var drawingApp = (function () {
 			outlineImage.src = "images/background/"+image_name;
 			
 		},
-		// returns an image to color
+		// Returns an image to color
 		getBackgroundImage = function(){
-			// this function will emit a message get the current randomly chose image for all connected users 
+			// this function will emit a message to get the current randomly chose image for all connected users 
 			return "watermelon-duck-outline.png";
 		},
 		
 		// Saves the drawing locally as an image 
 		// @param image_name
 		// @param image_data
-		saveDrawingToLocal = function(image_name,image_data){
+		saveDrawingToLocal = function(image_name,image_data,album_id){
 		    
 			var canSave = true;
 			var $notification_message = $("#notification_message");
 			
 			restoreDrawingsFromLocal().forEach(function(drawing){
-				// check to see if there is already a drawing by the user-entered name
+				// Check to see if there is already a drawing by the user-entered name
 				if(drawing.image_name==image_name){
 		    	      canSave = false;
 				}
@@ -439,17 +594,17 @@ var drawingApp = (function () {
 			});
 			
 			if(canSave){
-				// check if there is any drawings already in storage, if there is increment the number and store or store the first one 
+				// Check if there is any drawings already in storage, if there is increment the number and store or store the first one 
 					if(localStorage["drawing_number"]!=null){
 						var drawing_no = parseInt(localStorage["drawing_number"]);
 						localStorage["drawing_number"] = ++drawing_no;
-						localStorage["drawing_"+localStorage["drawing_number"]] = JSON.stringify({"image_name" : image_name,"image_data" : image_data});
+						localStorage["drawing_"+localStorage["drawing_number"]] = JSON.stringify({"album_id" : album_id, "image_name" : image_name,"image_data" : image_data});
 						$notification_message.html("Drawing saved.").css("color","teal").fadeIn();
 			    	    hide_notification_message();
 						clearDrawing();
 					}else{
 						localStorage["drawing_number"] = 1;
-						localStorage["drawing_"+localStorage["drawing_number"]] = JSON.stringify({"image_name" : image_name,"image_data" : image_data});
+						localStorage["drawing_"+localStorage["drawing_number"]] = JSON.stringify({"album_id" : album_id,"image_name" : image_name,"image_data" : image_data});
 						$notification_message.html("Drawing saved.").css("color","teal").fadeIn();
 			    	    hide_notification_message();
 			    	    clearDrawing();
@@ -461,7 +616,7 @@ var drawingApp = (function () {
 			}
 			
 		 },
-		 // returns the user's saved drawings
+		 // Returns the user's saved drawings
 		 restoreDrawingsFromLocal = function(){
 			 
 			   var drawings = Array();
@@ -475,7 +630,7 @@ var drawingApp = (function () {
 			 
 			 return drawings;
 		 },
-		 // deletes a drawing from storage
+		 // Deletes a drawing from storage
 		 // @param image_name
 		 deleteStoredDrawing = function(image_name){
 			 			
@@ -492,23 +647,106 @@ var drawingApp = (function () {
 			 populateSavedDrawings();
 			 
 		 },
-		 // populates the saved drawings from storage to the collection page
-		 populateSavedDrawings = function(){
+		 // Populates the saved drawings from storage to the collection page
+		 // @param album_id
+		 populateSavedDrawings = function(album_id){
 			 
 			 var $drawingsDiv = $("#drawingsDiv");
 				$drawingsDiv.html("");
 				var drawings = "";
 				restoreDrawingsFromLocal().forEach(function(drawing){
-					$drawingsDiv.append("<a href='#' id='"+drawing.image_name+"' data-role='button'><img src='"+drawing.image_data+"'  /><br />Name: "+drawing.image_name+"</a><br />");
-					// deletes the clicked or tapped image
-					$("#"+drawing.image_name).on("vclick",function(e){
-						deleteStoredDrawing(drawing.image_name);
-						e.preventDefault();
-					});
-				 });
+					if(drawing.album_id==album_id){
+						$drawingsDiv.append("<a href='#' id='"+drawing.image_name+"' data-role='button'><img src='"+drawing.image_data+"'  /><br />Name: "+drawing.image_name+"</a><br />");
+						// deletes the clicked or tapped image
+						$("#"+drawing.image_name).on("vclick",function(e){
+							deleteStoredDrawing(drawing.image_name);
+							e.preventDefault();
+						});
+					}
+				});
 			 
 		 },
-
+		 // Populates album folders on the collection page
+		 populateAlbumFolders = function(){
+			 var folderImage = new Image();
+			   	 folderImage.src = "images/folder.gif";
+			   	 folderImage.onload = function(){
+			   		$("#foldersDiv").html("");
+			   		JSON.parse(localStorage['albums']).forEach(function(album){
+			   			$("#foldersDiv").append(" <a href='#' data-role='button'  id='"+album.album_id+"' class='folder'><img src='"+folderImage.src+"' alt='folder' class='folder' /></a> <div> "+album.album_name+"</div><br />");
+			   			  // locally store the clicked folder's album id and forward the user to the savedImages page 
+			   				$("#"+album.album_id).on("vclick",function(e){
+			   				  sessionStorage['clickedFolder'] = album.album_id;
+			   				  $.mobile.changePage("#savedImages");
+			   				  e.preventDefault();
+			   			  });
+			   		});
+			   	 } 
+		 },
+		 populateAlbums = function(){
+			 $("#albums_selection").html(cleanAlbumsDropDown);
+			 console.log("restored albums selction state");
+			 var albums_selection="";
+			 JSON.parse(localStorage['albums']).forEach(function(album){
+				 // populate album drop-down
+				 albums_selection += "<option value='"+album.album_id+"'> "+album.album_name+" </option>";
+			 });
+			 $("#albums_selection").append(albums_selection);
+			 
+		 },
+		 albumsInit = function(){
+			 
+			 try{
+				 populateAlbums();
+				 
+			 }catch(ex){
+				 // if the albums storage doesn't exists, create a new default album, and then store it in a new created albums storage
+				 var albumObj = {"album_id" : "album_1", "album_name" : "Default"},
+				 albums = new Array();
+				 albums.push(albumObj);
+				 localStorage['albums'] = JSON.stringify(albums);
+				 populateAlbums();
+			 }
+			 
+		 },
+		 // Check if an album name exists
+		 // @param album_name
+		 albumNameExists = function(album_name){
+			 var isExists = false;
+				 JSON.parse(localStorage['albums']).forEach(function(album){
+					 if(album.album_name==album_name){
+						 isExists = true;
+					 }
+				 
+				 });
+			 
+			 return isExists;
+		 },
+		 // Creates a new album for saving drawings
+		 // @param album_name
+		 createAlbum = function(album_name){
+			 var isCreated = false;
+			 
+			 if(!albumNameExists(album_name)){
+				 
+				 // generate album id
+				 var albums = JSON.parse(localStorage['albums']),
+				 	 last_album_id = albums[albums.length-1].album_id,
+				 	 underscore_index = last_album_id.indexOf('_'),
+				 	 id_no = parseInt(last_album_id.substr(underscore_index+1));
+				 	 id_no++;
+				 var album_id = "album_"+id_no,
+				 	 albumObj = {"album_id" : album_id, "album_name" : album_name};
+				 
+				    
+				 	albums.push(albumObj);
+				 	localStorage['albums'] = JSON.stringify(albums);
+				 
+				 isCreated = true;
+			 }
+			 
+			 return isCreated;
+		 },
 		// Creates a canvas element, loads images, adds events, and draws the canvas for the first time.
 		init = function () {
 
@@ -518,12 +756,32 @@ var drawingApp = (function () {
 			canvas.setAttribute('height', canvasHeight);
 			canvas.setAttribute('id', 'canvas');
 			document.getElementById('canvasDiv').appendChild(canvas);
+			
+			colorCanvas = document.createElement('canvas');
+			colorCanvas.setAttribute('width',colorCanvasWidth);
+			colorCanvas.setAttribute('height',colorCanvasHeight);
+			colorCanvas.setAttribute('id',"colorCanvas");
+			document.getElementById('canvasDiv').appendChild(colorCanvas);
+			
+			
 			if (typeof G_vmlCanvasManager !== "undefined") {
 				canvas = G_vmlCanvasManager.initElement(canvas);
+				colorCanvas = G_vmlCanvasManager.initElement(colorCanvas);
 			}
 			context = canvas.getContext("2d"); // Grab the 2d canvas context
+			colorCanvasContext = colorCanvas.getContext("2d"); // Grabs the 2d canvas context of the colorCanvas
 			// Note: The above code is a workaround for IE 8 and lower. Otherwise we could have used:
 			//     context = document.getElementById('canvas').getContext("2d");
+			
+			// initialize additional crayons' coordinates, and colors
+			colorCrayonsInit();
+			
+			// saves the state of the albums drop down
+			cleanAlbumsDropDown = $("#albums_selection").html();
+
+			// initialize albums
+			 albumsInit();
+			
 
 			// Load images
 			crayonImage.onload = resourceLoaded;
@@ -546,6 +804,12 @@ var drawingApp = (function () {
 
 			crayonTextureImage.onload = resourceLoaded;
 			crayonTextureImage.src = "images/crayon-texture.png";
+			
+			previous.onload = resourceLoaded;
+			previous.src = "images/previous.gif";
+			
+			next.onload = resourceLoaded;
+			next.src = "images/next.gif";
 
 			
 			loadBackgroundImage(getBackgroundImage());
@@ -559,6 +823,9 @@ var drawingApp = (function () {
 		saveDrawingToLocal : saveDrawingToLocal,
 		restoreDrawingsFromLocal : restoreDrawingsFromLocal,
 		hide_notification_message : hide_notification_message,
-		populateSavedDrawings : populateSavedDrawings
+		populateSavedDrawings : populateSavedDrawings,
+		createAlbum : createAlbum,
+		populateAlbumFolders : populateAlbumFolders,
+		populateAlbums : populateAlbums
 	};
 }());
