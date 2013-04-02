@@ -1,19 +1,20 @@
 //logic
 
 	$("#saved").on({
-		pageshow : function(){
+		pagebeforeshow : function(){
 			drawingApp.populateAlbumFolders();
 	  }	
  });
 	
 	$("#savedImages").on({
-		pageshow : function(){
-			var album_id = sessionStorage['clickedFolder'];
-				drawingApp.populateSavedDrawings(album_id);
+		pagebeforeshow : function(){
+			    var album_id = sessionStorage['clickedFolder'];
+					drawingApp.populateSavedDrawings(album_id);
 		}
 		
 	});
-
+	
+	
 $(document).ready(function(){
 	
 	var $notification_message = $("#notification_message");
@@ -28,7 +29,6 @@ $(document).ready(function(){
 		 	 album_id,
 		 	 canSave = false;
 		 	 
-		 
 		   if($albums_selection.val() != "Create or Select Album" && $albums_selection.val()!="create" ){
 			   		 console.log($albums_selection.val());
 			   		 album_id = $albums_selection.val();
@@ -101,7 +101,46 @@ $(document).ready(function(){
 		}
 		
 	});
+	
+	$(".require_login").on("vclick",function(e){
+		  try{
+			  var loginDetails = JSON.parse(localStorage['login_details']);
+			       if(loginDetails.auto_login){
+			    	   // login the user
+			    	   
+			    	   if($(this).hasClass("chat")){
+			    		   		$.mobile.changePage("#chat");
+			    	   		}else if($(this.hasClass("showcase"))){
+			    	        	$.mobile.changePage("#showcase");
+			    	        }
+			    	   
+			       }else if(loginDetails.remember_login){
+			    	   // populate user details
+			    	     $("#username").val(loginDetails.username);
+			    	     $("#password").val(loginDetails.password);
+			    	     $.mobile.changePage("#login");
+			    	   
+			       }else{
+			    	   $.mobile.changePage("#login");
+			       }
+		  }catch(ex){
+			  $.mobile.changePage("#login");
+		  }
+		  e.preventDefault();
+	});
+	
+	$("#btnRegister").on("vclick",function(){
+		var details = {
+				"username" : $("#username").val(),
+				"password" : $("#password").val(),
+				"password_2" : $("#password_2").val()
+		}
+		
+		drawingApp.register(JSON.parse(details));
+	});
+	
+	$("#btnLogin").on("vclick",function(){
+		drawingApp.login($("#username").val(),$("#password").val());
+	});
 
 });
-
-

@@ -29,7 +29,7 @@ app.get("/",function(req,res){
 
 io.sockets.on("connection",function(socket){
 	console.log("client connected");
-	socket.emit("connected","You have been connected");
+	//socket.emit("connected","You have been connected");
 });
 
 

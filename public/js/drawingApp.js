@@ -650,7 +650,15 @@ var drawingApp = (function () {
 		 // Deletes album files
 		// @param album_id
 		 deleteAlbumFiles = function(album_id){
-			 console.log("deleting files...");
+			 var index = 0;
+			 restoreDrawingsFromLocal().forEach(function(drawing){
+				 if(drawing.album_id != album_id){
+					 index++;
+					 localStorage["drawing_"+index] = JSON.stringify(drawing);
+				 }
+			 });
+			 localStorage["drawing_number"] = index;
+			 populateSavedDrawings();
 			 
 		 },
 		 // Deletes an album
@@ -688,7 +696,6 @@ var drawingApp = (function () {
 			   	 folderImage.onload = function(){
 			   		$("#foldersDiv").html("");
 			   		JSON.parse(localStorage['albums']).forEach(function(album){
-			   			$("#foldersDiv").append("");
 			   			$("#foldersDiv").append(" <div><a href='#' data-role='button' id='delete_"+album.album_id+"' title='delete'><img src='images/delete.png' alt='delete' /></a> <a href='#' data-role='button'  id='"+album.album_id+"' class='folder'><img src='"+folderImage.src+"' alt='folder' class='folder' /></a> <div> "+album.album_name+"</div><a href='#' data-role='button' id='enter_comp_"+album.album_id+"' title='enter collection tournament'><img src='images/enter_competition.png' alt='enter collection tournament' /></a></div>");
 			   			  // locally store the clicked folder's album id and forward the user to the savedImages page 
 			   				$("#"+album.album_id).on("vclick",function(e){
@@ -698,7 +705,7 @@ var drawingApp = (function () {
 			   			  });
 			   				
 			   			 $("#delete_"+album.album_id).on("vclick",function(){
-			   				 // delete an album if its not the default one
+			   				 // deletes an album if its not the default one
 			   				 if(album.album_id != "album_1"){
 			   					 deleteAlbum(album.album_id);
 			   					 deleteAlbumFiles(album.album_id);
@@ -712,7 +719,6 @@ var drawingApp = (function () {
 		 },
 		 populateAlbums = function(){
 			 $("#albums_selection").html(cleanAlbumsDropDown);
-			 console.log("restored albums selction state");
 			 var albums_selection="";
 			 JSON.parse(localStorage['albums']).forEach(function(album){
 				 // populate album drop-down
@@ -773,6 +779,34 @@ var drawingApp = (function () {
 			 }
 			 
 			 return isCreated;
+		 },
+		 login = function(usename,password){
+			  var validate_login = function(username,password){
+				  var isValid = false;
+				  
+				  return isValid;
+			  }
+			  
+			  if(validate_login(username,password)){
+				  var isRegistered = false;
+				  // validate user details from our database
+				  
+				  return isRegistered;
+			  }
+			 
+		 },
+		 register = function(details){
+			   var validate_register = function(details){
+				   var isValid = false;
+				   
+				   return isValid;
+			   }
+			   if(validate_register(details)){
+				   var isRegistered = false;
+					  // register user details to our database
+					  
+				  return isRegistered;
+			   }
 		 },
 		// Creates a canvas element, loads images, adds events, and draws the canvas for the first time.
 		init = function () {
