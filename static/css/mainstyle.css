@@ -1,0 +1,197 @@
+#main {
+	width: 300px;
+	margin:auto;
+	/*background: #ececec;*/
+	padding: 20px;
+	border: 1px solid #ccc;
+}
+
+#image-list {
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+#image-list li {
+	/*background: #fff;*/
+	border: 1px solid #ccc;
+	text-align:center;
+	padding:20px;
+	margin-bottom:19px;
+}
+#image-list li img {
+	width: 258px;
+	vertical-align: middle;
+	border:1px solid #474747;
+}
+
+#error_message {
+	 color : "red";
+}
+
+.folder:hover {
+	background : grey;
+}
+
+
+
+
+button {width:50px;height:50px;}
+div {text-align:center;}
+#backBtn {width: 300px;}
+#board{width:300px;height:300px; }
+
+.wood {width:100%;height:80%}
+
+#popupPanel-popup {
+    right: 0 !important;
+    left: auto !important;
+}
+#popupPanel {
+    width: 200px;
+    border: 1px solid #000;
+    border-right: none;
+    background: rgba(0,0,0,.5);
+    margin: -1px 0;
+};
+#popupPanel .ui-btn {
+    margin: 2em 15px;
+}
+
+#errMessage {
+	   color: rgb(70,0,0);
+	   height : 50px;
+	   font-family: Helvetica, Arial, sans-serif;
+	   font-weight: bold;
+	   
+}
+
+/*#pic {width:90%;height:50%}*/
+#center {background-color:red;width:90%;height:40;}
+#reset{text-decoration:none}
+#home{text-decoration:none}
+
+/* css for custom BlackBerry 10 icons */
+.ui-icon-ic_settings {
+	background-image : url("icons/ic_settings.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_search {
+	background-image : url("icons/ic_search.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_done {
+	background-image : url("icons/ic_done.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_edit {
+	background-image : url("icons/ic_edit.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_add {
+	background-image : url("icons/ic_add.png");
+	background-size: 18px 18px;
+}
+.ui-icon-ic_cancel {
+	background-image : url("icons/ic_cancel.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_bbm {
+	background-image : url("icons/ic_bbm.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_delete {
+	background-image : url("icons/ic_delete.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_cut {
+	background-image : url("icons/ic_cut.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_email {
+	background-image : url("icons/ic_email.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_help {
+	background-image : url("icons/ic_help.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_info {
+	background-image : url("icons/ic_info.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_lock {
+	background-image : url("icons/ic_lock.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_map {
+	background-image : url("icons/ic_map.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_move {
+	background-image : url("icons/ic_move.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_nav_to {
+	background-image : url("icons/ic_nav_to.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_disable {
+	background-image : url("icons/ic_disable.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_next {
+	background-image : url("icons/ic_next.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_open {
+	background-image : url("icons/ic_open.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_open_link {
+	background-image : url("icons/ic_open_link.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_forward_as_text {
+	background-image : url("icons/ic_forward_as_text.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_overflow_action {
+	background-image : url("icons/ic_overflow_action.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_view_details {
+	background-image : url("icons/ic_view_details.png");
+	background-size: 18px 18px;
+}
+
+.ui-icon-ic_view_grid {
+	background-image : url("icons/ic_view_grid.png");
+	background-size: 18px 18px;
+}
+
+
+
+
+
+

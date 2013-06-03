@@ -1,0 +1,27 @@
+William Malone's and I Simple Drawing app
+- Make a drawing passable as a JSON object/ just pass it using canvas.toDataURL();. done
+- Add more drawings for users to color
+- make the canvas and drawing area bigger
+- add more colors. done
+- Add black as one of the colors so a player can be creative. done
+- Make a page to display saved drawings. done
+- Have folders on the saved drawing page. When a user is about to save an image, they should be able to selected an already created folder, or create a new one to save the image inside it. done
+- Make saved images editable, and then re-savable
+- Add a virtual currency, and call it Gee
+- Make available a competition for users to be able to enter their saved drawing set in a special competition
+- Add a feature for users to be able to vote for drawings other than theirs
+- Add billing to enter the competition 
+- There will be 5, 10,15,20 minutes competitions, and with each increment of time the image will be larger and requires more attention to detail
+- The images to color will be chose on the server and the connected users will have to finish coloring it in 5 minutes and afterward there will have to vote on other users' images, one vote each and the user who wins gets 10% of the virtual currency that was spent by all users who entered the competition. 
+- Add global chat where users can chat with other game users of this game and others we have created
+- Add default chatrooms and give users the ability to create their chatrooms
+- Add sound for every new chat message
+more colors implementation
+- Have some color brushes on the colorCanvas and some totally off. When a user clicks next we move the brushes 10px up, and the redraw.
+- When a user clicks previous we move the brushes 10px down, and then redraw
+- When a brush is clicked its color is assigned to the next color that will be used for drawing
+
+- A user should be able to add colors to their favorite, so to be displayed on the upper color selection canvas
+- Level 1 the user will have unlimited selection of colors
+- Level 2 colors will be limited
+- Level 3 they will have choose and then use only their favorite colors.  

@@ -15,3 +15,8 @@
 #        file or packaging it in the node_modules/ directory. Node will give
 #        preference to the "locally" installed version of that module.
 #
+
+express
+mysql
+socket.io
+websocket

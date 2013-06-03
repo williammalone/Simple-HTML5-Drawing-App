@@ -1,0 +1,2 @@
+{"error":{"code":"ER_BAD_TABLE_ERROR","index":0},"file_name":"startup_da_tables.js","line_number":472}
+{"error":{"code":"ER_BAD_FIELD_ERROR","index":0},"file_name":"startup_da_samples.js","line_number":294}

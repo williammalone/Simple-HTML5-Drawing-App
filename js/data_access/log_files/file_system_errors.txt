@@ -1,0 +1,4 @@
+{"error":{"errno":34,"code":"ENOENT","path":"C:\\node\\PrintP_\\js\\data_access\\log_files\\database_system_errors1.txt"},"file_name":"system_errors_da.js","line_number":157}
+{"error":{"errno":34,"code":"ENOENT","path":"C:\\node\\PrintP_\\js\\data_access\\log_files\\database_system_errors1.txt"},"file_name":"system_errors_da.js","line_number":157}
+{"error":{"errno":34,"code":"ENOENT","path":"C:\\node\\PrintP_\\js\\data_access\\log_files\\database_system_errors1.txt"},"file_name":"system_errors_da.js","line_number":157}
+{"error":{"errno":34,"code":"ENOENT","path":"C:\\node\\PrintP_\\js\\data_access\\log_files\\database_system_errors1.txt"},"file_name":"system_errors_da.js","line_number":157}
