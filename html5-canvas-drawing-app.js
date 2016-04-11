@@ -303,8 +303,8 @@ var drawingApp = (function () {
 			var press = function (e) {
 				// Mouse down location
 				var sizeHotspotStartX,
-					mouseX = e.pageX - this.offsetLeft,
-					mouseY = e.pageY - this.offsetTop;
+					mouseX = (e.changedTouches ? e.changedTouches[0].pageX : e.pageX) - this.offsetLeft,
+mouseY = (e.changedTouches ? e.changedTouches[0].pageY : e.pageY) - this.offsetTop;
 
 				if (mouseX < drawingAreaX) { // Left of the drawing area
 					if (mouseX > mediumStartX) {
@@ -350,23 +350,27 @@ var drawingApp = (function () {
 				redraw();
 			},
 
-				drag = function (e) {
-					if (paint) {
-						addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-						redraw();
-					}
-					// Prevent the whole page from dragging if on mobile
-					e.preventDefault();
-				},
-
-				release = function () {
-					paint = false;
+			drag = function (e) {
+				
+				var mouseX = (e.changedTouches ? e.changedTouches[0].pageX : e.pageX) - this.offsetLeft,
+					mouseY = (e.changedTouches ? e.changedTouches[0].pageY : e.pageY) - this.offsetTop;
+				
+				if (paint) {
+					addClick(mouseX, mouseY, true);
 					redraw();
-				},
+				}
+				// Prevent the whole page from dragging if on mobile
+				e.preventDefault();
+			},
 
-				cancel = function () {
-					paint = false;
-				};
+			release = function () {
+				paint = false;
+				redraw();
+			},
+
+			cancel = function () {
+				paint = false;
+			};
 
 			// Add mouse event listeners to canvas element
 			canvas.addEventListener("mousedown", press, false);
