@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SimplyColor</title>
+    
+    <link rel="stylesheet" href="css/jquery.mobile-1.2.0.css" />
+    <link rel="stylesheet" href="css/mobile-s.css" />
+    <link rel="stylesheet" href="css/mainstyle.css" />
+    <script type="text/javascript" src="js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.2.0.js"></script>
+	
+	<!-- <script src="node_modules/socket.io/lib/socket.io.js"></script> -->
+  </head>
+  <body>
+  <div data-role="page" id="index">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Home</h3></li>
+        	</ul>
+        	
+    		<div id="canvasDiv"></div>
+    		<div data-role="fieldcontain">
+    					<label for="drawing_name">Save Drawing</label><br />
+    					<div id="notification_message" style="color:red"></div><br />
+    					 <input type="text" data-inset="true" id="drawing_name" placeholder="Drawing Name" /><br />
+    					 <label for="albums_selection">Choose Album</label><br />
+    					 <select id="albums_selection" data-native-menu="false">
+    					    <option>Create or Select Album</option>
+    					 	<option value="create">Create New Album</option>
+    					 </select><br />
+    					<a href="#" data-role="button" data-inline="true" id="save_drawing">Save</a>
+    					</div>
+    					
+    				<div data-role="popup" id="create_album">
+    				<div style="padding:13px"></div>
+    				<div data-role="header">Create Album</div>
+    					<div data-role="content">
+    						<div id="album_name_error"></div>
+    						<div data-role="fieldcontain">
+    							<label for="album_name">Name:</label><br />
+    							<input type="text" id="album_name" />
+    							<a href="#" data-role="button" id="save_album_name" data-inline="true">Save</a>
+    						</div>
+    					</div>
+    				</div>	
+    				
+    		 <div data-role="collapsible">
+    			<h3>Instructions</h3>
+        			<p></p>
+    		</div>
+    		<div data-role="collapsible">
+    			<h3>About</h3>
+        		<p>Name : SimplyColor<br />Version : 1.0<br />Developers : William Melon and Khulekani Ngongoma</p>
+    		</div>
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+   <div data-role="page" id="saved">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Collection</h3></li>
+        	</ul>
+        	<div id="foldersDiv"></div>
+    		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+  <div data-role="page" id="savedImages">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Collection Drawings</h3></li>
+        	</ul>
+        	<div id="drawingsDiv"></div>
+    		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+       <a href="#" data-role="button" data-rel="back" style="width:500px">Back</a>
+  </div>
+  </div>
+  
+  <div data-role="page" id="showcase">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Tournaments</h3></li>
+        	</ul>
+        	<ul data-role="listview" data-inset="true">
+    <li><a href="#" id="tournament_twenty">
+		<h3>Beginner</h3>
+        <p>It has basic drawings which requires the least attention to detail and gives you a lot of time to perfect your drawings.</p>
+        </a>
+    </li>
+    <li data-role="list-divider"></li>
+    <li>
+        <a href="#" id="tournament_ten">
+        <h3>Intermediate</h3>
+            <p>A little improvement... A bit difficult.</p>
+        </a>
+    </li>
+    <li data-role="list-divider"></li>
+    <li>
+        <a href="#" id="tournament_five">
+        <h3>Pro</h3>
+            <p>To win this tournament, you require speed and attention to detail.</p>
+        </a>
+    </li>
+    <li data-role="list-divider"></li>
+    <li>
+        <a href="#tournament_collection">
+        <h3>Collection Tournament</h3>
+            <p>Put your collection of drawings into a test.</p>
+        </a>
+    </li>
+          
+    		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+  <div data-role="page" id="tournament_twenty">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Beginner Tournament</h3></li>
+        	</ul>
+    		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+  <div data-role="page" id="tournament_ten">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Intermediate Tournament</h3></li>
+        	</ul>
+    		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+  <div data-role="page" id="tournament_five">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Pro Tournament</h3></li>
+        	</ul>
+    		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+   <div data-role="page" id="chat">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>Chat</h3></li>
+        	</ul>
+    		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+  <div data-role="page" id="login">
+    <div data-role="header" data-position="fixed"><h3>SimplyColor</h3></div>
+    	<div data-role="content">
+    		<ul data-role="listview" data-inset="true" data-theme="b">
+        		<li><h3>SocialHub</h3></li>
+        	</ul>
+        	<h3>Register once, and use your login details on all our games.</h3>
+        					<label for="username">Username:</label>
+        					<input type="text" id="username" placeholder="Enter username" data-inset="true" /> 
+        					<label for="password">Password:</label>
+        					<input type="password" id="password" placeholder="Enter password" data-inset="true" />
+        					<label for="password_2">Re-type Password (Registration):</label>
+        					<input type="password" id="password_2" placeholder="Re-type password" data-inset="true" />
+        					<a href="#" data-role="button" id="btnLogin" data-inline="true">Login</a>
+        					<a href="#" data-role="button" id="btnRegister" data-inline="true">Register</a>
+        		
+    	</div>
+    <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+       <ul>
+         <li><a href="#index" data-icon="ic_view_grid" data-iconpos="top" id="home" >Home</a></li>
+         <li><a href="#saved" data-icon="ic_email" data-iconpos="top">Collection</a></li>
+         <li><a href="#" data-icon="ic_info" data-iconpos="top" class="require_login showcase">Tournaments</a></li>
+         <li><a href="#" data-icon="ic_view_details" data-iconpos="top" class="require_login chat">Chat</a></li>
+       </ul>
+    </div>
+  </div>
+  </div>
+  
+  
+    <!--[if IE]><script type="text/javascript" src="js/excanvas.js"></script><![endif]-->
+    <script type="text/javascript" src="js/drawingApp.js"></script>
+    <script src="js/logic.js"></script>
+   
+    <script type="text/javascript">
+    	 drawingApp.init();
+    	/* var client = io.connect();
+    	 client.on("connected",function(data){
+    		 console.log("Connected to a Node Server");
+    		 
+    	 }); */
+    	 var client = new WebSocket('ws://127.0.0.1:8000');
+    	 console.log(client);
+    	 			  client.onopen = function(){
+    		 						console.log("Connected");
+    	 					}
+	</script>
+  </body>
+</html>
