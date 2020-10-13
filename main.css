@@ -1,0 +1,34 @@
+* {
+  user-select: none;
+}
+
+body {
+  overflow: hidden;
+}
+
+#c {
+  margin-left: -8px;
+  margin-top: -8px;
+  cursor: crosshair;
+}
+
+.buttons {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: black;
+  text-align: center;
+  padding: 0.5em;
+}
+
+button{
+  padding: 1em;
+  display: inline-block;
+}
+
+label{
+  color: white;
+  font-family: sans-serif;
+  padding: 0.2em;
+}
