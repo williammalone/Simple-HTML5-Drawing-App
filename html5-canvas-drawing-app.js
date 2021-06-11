@@ -21,7 +21,7 @@ var drawingApp = (function () {
 
 	var canvas,
 		context,
-		canvasWidth = 490,
+		canvasWidth = 500,
 		canvasHeight = 220,
 		colorPurple = "#cb3594",
 		colorGreen = "#659b41",
@@ -144,7 +144,7 @@ var drawingApp = (function () {
 				selected = (curColor === colorGreen);
 				locX = selected ? 18 : 52;
 				locY += 46;
-				drawCrayon(locX, locY, colorGreen, selected);
+				drawCrayon(locX, locY, colorRed, selected);
 
 				// Draw yellow crayon
 				selected = (curColor === colorYellow);
