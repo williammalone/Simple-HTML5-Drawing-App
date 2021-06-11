@@ -21,7 +21,7 @@ var drawingApp = (function () {
 
 	var canvas,
 		context,
-		canvasWidth = 490,
+		canvasWidth = 500,
 		canvasHeight = 220,
 		colorPurple = "#cb3594",
 		colorGreen = "#659b41",
